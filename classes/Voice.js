@@ -11,8 +11,8 @@ class Voice {
   update(_x, _y) {
     this.x = _x;
     this.y = _y;
-    this.matrix = [parseInt(this.map(this.x, 0, width, 0, 5)), parseInt(this.map(this.y, 0, height, 0, 3))];
-    // console.log(this.matrix);
+    this.matrix = [Math.floor(this.map(this.x, 0, width, 1, 6)), Math.floor(this.map(this.y, 0, height, 1, 5))];
+    console.log(this.matrix);
   }
 
   show() {
@@ -24,9 +24,6 @@ class Voice {
   }
 
   playSound() {
-    // const target = evt.target;
-    // const index = target.dataset.index;
-    // const loop = loops[index];
     const loop = loops[0];
 
     if (audioContext === null)
