@@ -1,0 +1,53 @@
+*
+  margin: 0
+  padding: 0
+
+body
+  background: #f2f2f2
+  text-align: center
+  color: black
+  cursor: cell
+  font-family: 'Playfair Display', serif
+  overflow: hidden
+
+  h1
+    letter-spacing: 1px
+    font-size: 2.5em
+    user-select: none
+
+  header
+    width: 100%
+    height: 20vh
+    box-sizing: border-box
+    padding: 20px
+
+  #matrix
+    width: 100%
+    height: 80vh
+
+    #canvas1
+      position: absolute
+      left: 0
+      top: 0
+      z-index: -2
+
+  #timeline
+    width: 100px
+    height: 100vh
+    position: absolute
+    top: 0px
+    right: 0px
+
+    // .sliderContainer
+    //   width: 600px
+    //   height: 100%
+    //   // background: pink
+    //   margin: 0 auto
+    //   line-height: 150px
+
+    input[type=range]
+      writing-mode: bt-lr
+      appearance: slider-vertical
+      width: 15px
+      height: 250px
+      margin-top: 200px
