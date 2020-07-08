@@ -6,7 +6,7 @@ const levels = [0, 0, -3, -10];
 const loops = [];
 const activeLoops = new Set();
 let loopStartTime = 0;
-const fadeTime = 0.2;
+const fadeTime = 0.2; 
 
 let canvas;
 let ctx;
