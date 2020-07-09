@@ -21,12 +21,12 @@ class Voice {
     this.updateTimer = window.setInterval(() => {
       this.matrix = [Math.floor(this.map(this.x, 0, width, 1, 6)), Math.floor(this.map(this.y, 0, height, 1, 5))];
       if (JSON.stringify(this.matrix) != JSON.stringify(this.tempMatrix)) {
-        console.log("Position changed!");
+        // console.log("Position changed!");
         // => Do what happens when position changes
         // this.playSound(2);
       }
       this.tempMatrix = this.matrix;
-      console.log(this.matrix);
+      // console.log(this.matrix);
     }, 1500);
   }
 

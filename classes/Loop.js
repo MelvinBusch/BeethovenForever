@@ -1,10 +1,11 @@
 class Loop {
-  constructor(_buffer, _level = 0, _matrixPosition) {
+  constructor(_buffer, _matrixPosition, _level = 0) {
     this.buffer = _buffer;
     this.amp = decibelToLinear(_level);
-    this.mouseGainValue = 0;
+    this.mouseGainValue = 1;
     this.source = null;
     this.gain = null;
+    this.mouseGainNode;
     this.matrixPosition = _matrixPosition;
   }
 
@@ -12,13 +13,18 @@ class Loop {
     const buffer = this.buffer;
     let offset = 0;
 
-    const mouseGain = audioContext.createGain();
-    mouseGain.gain.value = this.mouseGainValue;
+    let convolver = audioContext.createConvolver();
+    convolver.buffer = concertHallBuffer;
+    convolver.connect(audioContext.destination)
+
+    this.mouseGainNode = audioContext.createGain();
+    this.mouseGainNode.gain.value = this.mouseGainValue;
     // console.log(this.mouseGainValue);
-    mouseGain.connect(audioContext.destination);
+    // mouseGain.connect(audioContext.destination);
+    this.mouseGainNode.connect(convolver);
 
     const gain = audioContext.createGain();
-    gain.connect(mouseGain);
+    gain.connect(this.mouseGainNode);
 
     if (_sync) {
       // fade in only when starting somewhere in the middle
@@ -53,14 +59,8 @@ class Loop {
     activeLoops.delete(this);
   }
 
-  // updateMouseGain(_x, _y) {
-  //   let d = Math.sqrt(Math.pow(_x - voices[i].x, 2) + Math.pow(_y - voices[i].y, 2));
-  //   if (d < 100) {
-  //     this.mouseGainValue = this.map(d, 0, 100, 0, 1);
-  //   }
-  // }
   setGain(_gain) {
-    this.mouseGainValue = _gain;
+    this.mouseGainNode.gain.value = _gain;
   }
 
 

@@ -5,7 +5,7 @@ const levels = [0, 0, -3, -10];
 const loops = [];
 const activeLoops = new Set();
 let loopStartTime = 0;
-const fadeTime = 0.2; 
+const fadeTime = 2; 
 
 let canvas;
 let ctx;
@@ -16,10 +16,12 @@ let slider;
 let mousePos = [0,0];
 let dragging = false;
 
-const sounds = ["Scherzo.wav", "Waldstein.wav"];
+const sounds = ["Scherzo.wav", "Waldstein.wav", "Streichquartett_09.wav", "Streichquartett_14.wav"];
 const MATRIX = [];
 MATRIX[0] = [1000, 120]; // Scherzo
 MATRIX[1] = [600, 400]; // Waldstein
+MATRIX[2] = [300, 120]; // Streichquartett No. 9
+MATRIX[3] = [100, 550]; // Streichquartett No. 14
 // console.log(MATRIX[0]);
 
 
@@ -103,17 +105,14 @@ function animation() {
       let b  = Math.floor(Math.pow(voices[i].y - loops[j].matrixPosition[1], 2));
       let d = Math.floor(Math.sqrt(a + b));
       // console.log(d);
-      if (d < 200) {
-        // let level = mapValue(d, 0, 200, 1, 0);
-        // console.log(level);
-        loops[j].setGain(1)
-        console.log(loops[j]);
+      if (d < 250) {
+        let level = Math.max(mapValue(d, 100, 10, 0, 1), 1);
+        loops[j].setGain(level)
       } else {
-        loops[j].setGain(0)
+        loops[j].setGain(0.1);
       }
     }
   }
-
   window.requestAnimationFrame(animation);
 }
 
@@ -134,9 +133,8 @@ function loadSounds() {
     request.open('GET', pathToAudioFiles + sounds[i]);
     request.addEventListener('load', () => {
       decodeContext.decodeAudioData(request.response, (buffer) => {
-        const button = document.querySelector(`div.button[data-index="${i}"]`);
-        loops[i] = new Loop(buffer, button, MATRIX[i]);
-        console.log(loops[i]);
+        loops[i] = new Loop(buffer, MATRIX[i]);
+        // console.log(loops[i]);
       });
     });
     request.send();
@@ -169,6 +167,27 @@ function playSound(_sound) {
   }
 }
 
-function mapValue(value, x1, y1, x2, y2) {
-  return (value - x1) * (y2 - x2) / (y1 - x1) + x2;
+function mapValue(value, in_min, in_max, out_min, out_max) {
+  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
+
+// Hall
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var convolver = audioCtx.createConvolver();
+
+var soundSource, concertHallBuffer;
+
+let ajaxRequest = new XMLHttpRequest();
+ajaxRequest.open('GET', 'LargeHall.wav', true);
+ajaxRequest.responseType = 'arraybuffer';
+
+ajaxRequest.onload = function() {
+  var audioData = ajaxRequest.response;
+  audioCtx.decodeAudioData(audioData, function(buffer) {
+      concertHallBuffer = buffer;
+      soundSource = audioCtx.createBufferSource();
+      soundSource.buffer = concertHallBuffer;
+    }, function(e){"Error with decoding audio data" + e.err});
+}
+
+ajaxRequest.send();
