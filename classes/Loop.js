@@ -6,6 +6,7 @@ class Loop {
     this.gain = null;
     this.source = null;
     this.analyser = null;
+    this.mouseGainValue = 1;
   }
 
   start(time, sync = true) {
@@ -20,8 +21,12 @@ class Loop {
     }
 
     const gain = audioContext.createGain();
-    gain.connect(audioContext.destination);
+    gain.connect(mouseGain);
     gain.connect(analyser);
+
+    const mouseGain = audioContext.createGain();
+    mouseGain.gain.value = this.mouseGainValue;
+    mouseGain.connect(audioContext.destination);
 
     if (sync) {
       // fade in only when starting somewhere in the middle
@@ -79,8 +84,19 @@ class Loop {
     }
   }
 
+  updateMouseGain(_x, _y) {
+    let d = Math.sqrt(Math.pow(_x - voices[i].x, 2) + Math.pow(_y - voices[i].y, 2));
+    if (d < 100) {
+      this.mouseGainValue = this.map(d, 0, 100, 0, 1);
+    }
+  }
+
   get isPlaying() {
     return (this.source !== null);
+  }
+
+  map(value, x1, y1, x2, y2) {
+    return (value - x1) * (y2 - x2) / (y1 - x1) + x2;
   }
 }
 

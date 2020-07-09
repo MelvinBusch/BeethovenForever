@@ -1,6 +1,7 @@
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioContext = null;
-const sounds = ["Couchkonzert_Stinger_01.wav"];
+const sounds = ["Scherzo.wav", "Waldstein.wav"];
+// const sounds = ["Scherzo.midi"];
 const pathToAudioFiles = "audio/";
 const levels = [0, 0, -3, -10];
 const loops = [];
@@ -17,23 +18,24 @@ let slider;
 let mousePos = [0,0];
 let dragging = false;
 
-document.addEventListener("DOMContentLoaded", init);
+window.addEventListener("load", init);
 document.addEventListener("dblclick", _event => {
   if (voices.length == 0) {
     let a = new Voice(_event.x, _event.y, slider.value)
     voices.push(a);
-    a.playSound();
+    playSound();
   } else {
     for (let i = 0; i < voices.length; i++) {
       let d = Math.sqrt(Math.pow(_event.x - voices[i].x, 2) + Math.pow(_event.y - voices[i].y, 2));
       if (d < 30) {
-        voices[i].playSound();
+        // voices[i].playSound();
+        clearInterval(voices[i].updateTimer);
         voices.splice(i, 1);
         break;
       } else if (voices.length < maxVoices) {
         let b = new Voice(_event.x, _event.y, slider.value)
         voices.push(b);
-        b.playSound();
+        // b.playSound();
         break;
       }
     }
@@ -113,6 +115,31 @@ function loadLoops() {
   }
 }
 
+function playSound(_sound) {
+  let loop = loops[1];
+  if (_sound) {
+    loop = _sound;
+  }
+  
+  if (audioContext === null)
+    audioContext = new AudioContext();
+
+  if (loop) {
+    const time = audioContext.currentTime;
+    let syncLoopPhase = true;
+
+    if (activeLoops.size === 0) {
+      loopStartTime = time;
+      syncLoopPhase = false;
+    }
+
+    if (!loop.isPlaying) {
+      loop.start(time, syncLoopPhase);
+    } else {
+      loop.stop(time);
+    }
+  }
+}
 // function onButton() {
 //   // const target = evt.target;
 //   // const index = target.dataset.index;
