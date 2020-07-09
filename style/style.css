@@ -10,6 +10,10 @@ body {
   cursor: cell;
   font-family: 'Playfair Display', serif;
   overflow: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 body h1 {

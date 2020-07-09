@@ -1,4 +1,87 @@
 class Loop {
+  constructor(_buffer, _level = 0, _matrixPosition) {
+    this.buffer = _buffer;
+    this.amp = decibelToLinear(_level);
+    this.mouseGainValue = 0;
+    this.source = null;
+    this.gain = null;
+    this.matrixPosition = _matrixPosition;
+  }
+
+  start(_time, _sync = true) {
+    const buffer = this.buffer;
+    let offset = 0;
+
+    const mouseGain = audioContext.createGain();
+    mouseGain.gain.value = this.mouseGainValue;
+    // console.log(this.mouseGainValue);
+    mouseGain.connect(audioContext.destination);
+
+    const gain = audioContext.createGain();
+    gain.connect(mouseGain);
+
+    if (_sync) {
+      // fade in only when starting somewhere in the middle
+      gain.gain.value = 0;
+      gain.gain.setValueAtTime(0, _time);
+      gain.gain.linearRampToValueAtTime(this.amp, _time + fadeTime);
+
+      // set offset to loop time
+      offset = (_time - loopStartTime) % buffer.duration;
+    }
+
+    const source = audioContext.createBufferSource();
+    source.connect(gain);
+    source.buffer = buffer;
+    source.loop = true;
+    source.start(_time, offset);
+
+    this.source = source;
+    this.gain = gain;
+
+    activeLoops.add(this);
+  }
+
+  stop(time) {
+    this.source.stop(time + fadeTime);
+    this.gain.gain.setValueAtTime(this.amp, time);
+    this.gain.gain.linearRampToValueAtTime(0, time + fadeTime);
+
+    this.source = null;
+    this.gain = null;
+
+    activeLoops.delete(this);
+  }
+
+  // updateMouseGain(_x, _y) {
+  //   let d = Math.sqrt(Math.pow(_x - voices[i].x, 2) + Math.pow(_y - voices[i].y, 2));
+  //   if (d < 100) {
+  //     this.mouseGainValue = this.map(d, 0, 100, 0, 1);
+  //   }
+  // }
+  setGain(_gain) {
+    this.mouseGainValue = _gain;
+  }
+
+
+  map(value, x1, y1, x2, y2) {
+    return (value - x1) * (y2 - x2) / (y1 - x1) + x2;
+  }
+
+  get isPlaying() {
+    return (this.source !== null);
+  }
+}
+
+function decibelToLinear(val) {
+  return Math.exp(0.11512925464970229 * val); // pow(10, val / 20)
+}
+
+
+
+
+/*
+class Loop {
   constructor(buffer, button, level = 0) {
     this.buffer = buffer;
     this.button = button;
@@ -103,8 +186,7 @@ class Loop {
 function decibelToLinear(val) {
   return Math.exp(0.11512925464970229 * val); // pow(10, val / 20)
 }
-
-
+*/
 /*
 - Button nur für Styling?
 - Nach Ablauf eines Loops einen neuen Loop starten?
