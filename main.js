@@ -5,7 +5,7 @@ const levels = [0, 0, -3, -10];
 const loops = [];
 const activeLoops = new Set();
 let loopStartTime = 0;
-const fadeTime = 2; 
+const fadeTime = 4; 
 
 let canvas;
 let ctx;
@@ -16,7 +16,7 @@ let slider;
 let mousePos = [0,0];
 let dragging = false;
 
-const sounds = ["Scherzo.wav", "Waldstein.wav", "Streichquartett_09.wav", "Streichquartett_14.wav"];
+const sounds = ["Scherzo_02.wav", "Waldstein_03.wav", "StreichquartettNo9_02.wav", "StreichquartettNo14_02.wav"];
 const MATRIX = [];
 MATRIX[0] = [1000, 120]; // Scherzo
 MATRIX[1] = [600, 400]; // Waldstein
@@ -47,7 +47,7 @@ function init() {
 
   document.addEventListener("dblclick", _event => {
     if (voices.length == 0) {
-      let a = new Voice(_event.x, _event.y, slider.value)
+      let a = new Voice(_event.x, _event.y)
       voices.push(a);
       for (let loop of loops) {
         playSound(loop);
@@ -101,16 +101,16 @@ function animation() {
 
   for (let i = 0; i < voices.length; i++) {
     for (let j = 0; j < loops.length; j++) {
-      let a  = Math.floor(Math.pow(voices[i].x - loops[j].matrixPosition[0], 2));
-      let b  = Math.floor(Math.pow(voices[i].y - loops[j].matrixPosition[1], 2));
+      let a  = Math.pow(Math.floor(voices[i].x) - loops[j].matrixPosition[0], 2);
+      let b  = Math.pow(Math.floor(voices[i].y) - loops[j].matrixPosition[1], 2);
       let d = Math.floor(Math.sqrt(a + b));
-      // console.log(d);
-      if (d < 250) {
-        let level = Math.max(mapValue(d, 100, 10, 0, 1), 1);
-        loops[j].setGain(level)
-      } else {
-        loops[j].setGain(0.1);
+      let level = mapValue(d, 500, 0, 0, 1);
+      if (level < 0) {
+        level = 0;
+      } else if (level > 1) {
+        level = 1;
       }
+      loops[j].setGain(level);
     }
   }
   window.requestAnimationFrame(animation);

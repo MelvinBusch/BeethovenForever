@@ -1,5 +1,5 @@
 class Voice {
-  constructor(_x, _y, _z) {
+  constructor(_x, _y, _z = 0) {
     this.x = _x;
     this.y = _y;
     this.z = _z;
