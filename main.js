@@ -16,13 +16,16 @@ let slider;
 let mousePos = [0,0];
 let dragging = false;
 
-const sounds = ["Scherzo_02.wav", "Waldstein_03.wav", "StreichquartettNo9_02.wav", "StreichquartettNo14_02.wav"];
+const sounds = ["Scherzo_04.wav", "Waldstein_03.wav", "StreichquartettNo9_02.wav", "StreichquartettNo14_02.wav", "Violinenkonzert_01.wav"];
 const MATRIX = [];
-MATRIX[0] = [1000, 120]; // Scherzo
-MATRIX[1] = [600, 400]; // Waldstein
-MATRIX[2] = [300, 120]; // Streichquartett No. 9
-MATRIX[3] = [100, 550]; // Streichquartett No. 14
+MATRIX[0] = [1200, 150]; // Scherzo
+MATRIX[1] = [600, 400];  // Waldstein
+MATRIX[2] = [300, 120];  // Streichquartett No. 9
+MATRIX[3] = [220, 600];  // Streichquartett No. 14
+MATRIX[4] = [1200, 600]; // Violinenkonzert in D
 // console.log(MATRIX[0]);
+
+const voiceRadius = 600;
 
 
 window.addEventListener("load", init);
@@ -104,7 +107,7 @@ function animation() {
       let a  = Math.pow(Math.floor(voices[i].x) - loops[j].matrixPosition[0], 2);
       let b  = Math.pow(Math.floor(voices[i].y) - loops[j].matrixPosition[1], 2);
       let d = Math.floor(Math.sqrt(a + b));
-      let level = mapValue(d, 500, 0, 0, 1);
+      let level = mapValue(d, voiceRadius, 0, 0, 1);
       if (level < 0) {
         level = 0;
       } else if (level > 1) {
