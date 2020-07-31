@@ -13,15 +13,15 @@ class Loop {
     const buffer = this.buffer;
     let offset = 0;
 
-    let convolver = audioContext.createConvolver();
-    convolver.buffer = concertHallBuffer;
-    convolver.connect(audioContext.destination)
+    // let convolver = audioContext.createConvolver();
+    // convolver.buffer = concertHallBuffer;
+    // convolver.connect(audioContext.destination)
 
     this.mouseGainNode = audioContext.createGain();
     this.mouseGainNode.gain.value = this.mouseGainValue;
     // console.log(this.mouseGainValue);
-    // mouseGain.connect(audioContext.destination);
-    this.mouseGainNode.connect(convolver);
+    this.mouseGainNode.connect(audioContext.destination);
+    // this.mouseGainNode.connect(convolver);
 
     const gain = audioContext.createGain();
     gain.connect(this.mouseGainNode);

@@ -175,22 +175,22 @@ function mapValue(value, in_min, in_max, out_min, out_max) {
 }
 
 // Hall
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-var convolver = audioCtx.createConvolver();
+// var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+// var convolver = audioCtx.createConvolver();
 
-var soundSource, concertHallBuffer;
+// var soundSource, concertHallBuffer;
 
-let ajaxRequest = new XMLHttpRequest();
-ajaxRequest.open('GET', 'LargeHall.wav', true);
-ajaxRequest.responseType = 'arraybuffer';
+// let ajaxRequest = new XMLHttpRequest();
+// ajaxRequest.open('GET', 'LargeHall.wav', true);
+// ajaxRequest.responseType = 'arraybuffer';
 
-ajaxRequest.onload = function() {
-  var audioData = ajaxRequest.response;
-  audioCtx.decodeAudioData(audioData, function(buffer) {
-      concertHallBuffer = buffer;
-      soundSource = audioCtx.createBufferSource();
-      soundSource.buffer = concertHallBuffer;
-    }, function(e){"Error with decoding audio data" + e.err});
-}
+// ajaxRequest.onload = function() {
+//   var audioData = ajaxRequest.response;
+//   audioCtx.decodeAudioData(audioData, function(buffer) {
+//       concertHallBuffer = buffer;
+//       soundSource = audioCtx.createBufferSource();
+//       soundSource.buffer = concertHallBuffer;
+//     }, function(e){"Error with decoding audio data" + e.err});
+// }
 
-ajaxRequest.send();
+// ajaxRequest.send();
